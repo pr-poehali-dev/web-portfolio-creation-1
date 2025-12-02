@@ -1,249 +1,307 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('home');
+  const [revealedPeople, setRevealedPeople] = useState<number[]>([]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = ['home', 'about', 'portfolio', 'services', 'blog', 'contact'];
-      const current = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
-      });
-      if (current) setActiveSection(current);
-    };
+  const celebrities = [
+    { id: 1, name: 'Илон Маск', occupation: 'CEO Tesla & SpaceX', size: '17.8 см', price: 5000, image: '🚀' },
+    { id: 2, name: 'Владимир Путин', occupation: 'Президент РФ', size: '14.2 см', price: 15000, image: '🇷🇺' },
+    { id: 3, name: 'Дональд Трамп', occupation: 'Экс-президент США', size: '11.4 см', price: 8000, image: '🇺🇸' },
+    { id: 4, name: 'Джефф Безос', occupation: 'Основатель Amazon', size: '13.6 см', price: 6000, image: '📦' },
+    { id: 5, name: 'Марк Цукерберг', occupation: 'CEO Meta', size: '12.9 см', price: 4500, image: '👤' },
+    { id: 6, name: 'Билл Гейтс', occupation: 'Основатель Microsoft', size: '15.3 см', price: 7000, image: '💻' },
+  ];
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const reviews = [
+    { id: 1, name: 'Анна К.', rating: 5, text: 'Наконец-то узнала правду о своем кумире! Информация достоверная, проверяла сама 😏', verified: true },
+    { id: 2, name: 'Дмитрий М.', rating: 5, text: 'Был в шоке от результатов! Деньги не жалею, теперь могу спать спокойно.', verified: true },
+    { id: 3, name: 'Екатерина Л.', rating: 5, text: 'Купила данные на бывшего начальника... Теперь понятно, почему он такой злой 😂', verified: false },
+    { id: 4, name: 'Алексей В.', rating: 4, text: 'Точные измерения, конфиденциальная доставка. Рекомендую!', verified: true },
+  ];
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: 'smooth' });
+  const handleReveal = (id: number) => {
+    if (!revealedPeople.includes(id)) {
+      setRevealedPeople([...revealedPeople, id]);
+    }
   };
 
-  const portfolioProjects = [
-    { id: 1, title: 'Клиент А', description: 'Профессиональная консультация', category: 'Частные клиенты' },
-    { id: 2, title: 'Клиент Б', description: 'Комплексное обследование', category: 'Корпоративные клиенты' },
-    { id: 3, title: 'Клиент В', description: 'Экспресс-диагностика', category: 'Частные клиенты' },
-    { id: 4, title: 'Клиент Г', description: 'Консультационные услуги', category: 'Корпоративные клиенты' },
-  ];
-
-  const services = [
-    { icon: 'Ruler', title: 'Первичная консультация', description: 'Профессиональный подход к каждому клиенту' },
-    { icon: 'LineChart', title: 'Детальная аналитика', description: 'Подробный анализ с предоставлением отчетности' },
-    { icon: 'Users', title: 'Консультации для близких', description: 'Информирование доверенных лиц клиента' },
-    { icon: 'Shield', title: 'Конфиденциальность', description: 'Гарантия полной конфиденциальности данных' },
-  ];
-
-  const blogPosts = [
-    { id: 1, title: 'Важность профессиональных измерений', date: '15 ноября 2024', excerpt: 'Почему стоит обращаться к специалистам...' },
-    { id: 2, title: 'Стандарты и методология', date: '8 ноября 2024', excerpt: 'Современные подходы к профессиональной практике...' },
-    { id: 3, title: 'Психологические аспекты', date: '1 ноября 2024', excerpt: 'Этические стороны профессиональной деятельности...' },
-  ];
-
   return (
-    <div className="min-h-screen bg-background">
-      <nav className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-border z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold font-heading">Профессиональное портфолио</h1>
-            <div className="hidden md:flex gap-8">
-              {['home', 'about', 'portfolio', 'services', 'blog', 'contact'].map((section) => (
-                <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    activeSection === section ? 'text-primary' : 'text-muted-foreground'
-                  }`}
-                >
-                  {section === 'home' && 'Главная'}
-                  {section === 'about' && 'О мне'}
-                  {section === 'portfolio' && 'Портфолио'}
-                  {section === 'services' && 'Услуги'}
-                  {section === 'blog' && 'Блог'}
-                  {section === 'contact' && 'Контакты'}
-                </button>
-              ))}
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="fixed top-0 left-0 right-0 bg-secondary/10 border-b border-secondary/30 backdrop-blur-sm z-50">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Icon name="Ruler" className="text-primary" size={28} />
+            <span className="font-heading text-xl font-bold">SizeLeaks</span>
+          </div>
+          <Badge variant="destructive" className="animate-pulse">
+            <Icon name="AlertTriangle" size={14} className="mr-1" />
+            Конфиденциально
+          </Badge>
+        </div>
+      </div>
+
+      <section className="pt-32 pb-20 px-6">
+        <div className="max-w-7xl mx-auto text-center">
+          <Badge className="mb-6 text-sm px-4 py-2 bg-primary/20 text-primary border-primary/40">
+            <Icon name="TrendingUp" size={16} className="mr-2" />
+            Уже 12,847 довольных клиентов
+          </Badge>
+          
+          <h1 className="text-5xl md:text-7xl font-heading font-bold mb-6 animate-fade-in leading-tight">
+            Узнайте НАСТОЯЩИЙ размер<br />
+            <span className="text-primary">любого известного человека</span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            Мы профессионально измеряем мужское достоинство и за вашу цену готовы раскрыть эксклюзивные данные
+          </p>
+
+          <div className="flex flex-wrap gap-4 justify-center items-center mb-12 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="flex items-center gap-2 text-green-400">
+              <Icon name="CheckCircle2" size={20} />
+              <span>Точные измерения</span>
+            </div>
+            <div className="flex items-center gap-2 text-green-400">
+              <Icon name="Shield" size={20} />
+              <span>100% конфиденциально</span>
+            </div>
+            <div className="flex items-center gap-2 text-green-400">
+              <Icon name="Zap" size={20} />
+              <span>Мгновенный доступ</span>
             </div>
           </div>
         </div>
-      </nav>
+      </section>
 
-      <section id="home" className="min-h-screen flex items-center justify-center px-6 pt-20">
-        <div className="max-w-4xl text-center animate-fade-in">
-          <h2 className="text-6xl font-bold font-heading mb-6">Профессиональные услуги высшего класса</h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Специализируюсь на профессиональных измерениях и консультациях с последующим информированием близких
+      <section className="py-20 px-6 bg-muted/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
+              Выберите интересующего человека
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Нажмите на карточку, чтобы раскрыть секретную информацию
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {celebrities.map((person, idx) => {
+              const isRevealed = revealedPeople.includes(person.id);
+              return (
+                <Card 
+                  key={person.id} 
+                  className="relative overflow-hidden hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1 animate-fade-in border-2 border-border hover:border-primary/50 cursor-pointer group"
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                  onClick={() => handleReveal(person.id)}
+                >
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="text-6xl">{person.image}</div>
+                      <Badge variant="secondary" className="text-xs">
+                        {person.price.toLocaleString()} ₽
+                      </Badge>
+                    </div>
+                    <CardTitle className="text-2xl mb-1">{person.name}</CardTitle>
+                    <CardDescription className="text-base">{person.occupation}</CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent>
+                    <div className="bg-muted rounded-lg p-4 mb-4 relative overflow-hidden">
+                      {!isRevealed && (
+                        <div className="absolute inset-0 backdrop-blur-md bg-muted/80 flex items-center justify-center">
+                          <Icon name="Lock" className="text-primary" size={32} />
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Размер:</span>
+                        <span className={`text-2xl font-bold ${isRevealed ? 'text-primary' : 'blur-sm'}`}>
+                          {person.size}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                      variant={isRevealed ? "secondary" : "default"}
+                      size="lg"
+                    >
+                      {isRevealed ? (
+                        <>
+                          <Icon name="CheckCircle2" className="mr-2" size={18} />
+                          Данные раскрыты
+                        </>
+                      ) : (
+                        <>
+                          <Icon name="Eye" className="mr-2" size={18} />
+                          Раскрыть за {person.price.toLocaleString()} ₽
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+
+                  {isRevealed && (
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500/20 text-green-400 border-green-500/40">
+                        <Icon name="Unlock" size={12} className="mr-1" />
+                        Открыто
+                      </Badge>
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
+              Отзывы довольных клиентов
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Более 12,000 человек уже получили секретную информацию
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {reviews.map((review, idx) => (
+              <Card 
+                key={review.id} 
+                className="animate-fade-in hover:shadow-lg transition-shadow border-border"
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
+                <CardHeader>
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <CardTitle className="text-lg mb-1 flex items-center gap-2">
+                        {review.name}
+                        {review.verified && (
+                          <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">
+                            <Icon name="BadgeCheck" size={12} className="mr-1" />
+                            Проверено
+                          </Badge>
+                        )}
+                      </CardTitle>
+                      <div className="flex gap-1">
+                        {[...Array(review.rating)].map((_, i) => (
+                          <Icon key={i} name="Star" size={16} className="text-yellow-400 fill-yellow-400" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <CardDescription className="text-base leading-relaxed">
+                    "{review.text}"
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-6 bg-gradient-to-b from-primary/10 to-transparent">
+        <div className="max-w-4xl mx-auto text-center">
+          <Icon name="Shield" size={64} className="mx-auto mb-6 text-primary" />
+          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+            Как это работает?
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8 mt-12">
+            <div className="text-center animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-primary">
+                <span className="text-2xl font-bold text-primary">1</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Выберите персону</h3>
+              <p className="text-muted-foreground">Выберите интересующего человека из нашей базы данных</p>
+            </div>
+
+            <div className="text-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-primary">
+                <span className="text-2xl font-bold text-primary">2</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Оплатите доступ</h3>
+              <p className="text-muted-foreground">Безопасная оплата через криптовалюту или банковскую карту</p>
+            </div>
+
+            <div className="text-center animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-primary">
+                <span className="text-2xl font-bold text-primary">3</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Получите данные</h3>
+              <p className="text-muted-foreground">Мгновенный доступ к точным измерениям и дополнительной информации</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-6 bg-muted/30">
+        <div className="max-w-2xl mx-auto text-center">
+          <Badge variant="destructive" className="mb-6 text-sm px-4 py-2 animate-pulse">
+            <Icon name="AlertCircle" size={16} className="mr-2" />
+            Ограниченное предложение
+          </Badge>
+          
+          <h2 className="text-3xl md:text-5xl font-heading font-bold mb-6">
+            Не нашли нужного человека?
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Закажите индивидуальное измерение любого известного человека! Работаем по всему миру.
           </p>
-          <Button size="lg" onClick={() => scrollToSection('contact')} className="text-lg px-8">
-            Связаться со мной
+          
+          <Button size="lg" className="text-lg px-12 py-6 h-auto">
+            <Icon name="Mail" className="mr-2" size={20} />
+            Заказать индивидуальное измерение
           </Button>
         </div>
       </section>
 
-      <section id="about" className="min-h-screen flex items-center justify-center px-6 bg-muted/30">
-        <div className="max-w-4xl">
-          <h2 className="text-4xl font-bold font-heading mb-8 text-center">О мне</h2>
-          <Card className="animate-slide-in">
-            <CardContent className="p-8">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Опыт и квалификация</h3>
-                  <p className="text-muted-foreground leading-relaxed mb-4">
-                    Более 10 лет профессиональной практики в области специализированных измерений и консультаций.
-                  </p>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Индивидуальный подход к каждому клиенту, строгое соблюдение профессиональных стандартов и конфиденциальности.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Ключевые навыки</h3>
-                  <ul className="space-y-3">
-                    {['Профессиональные измерения', 'Аналитическая отчетность', 'Консультирование', 'Конфиденциальность'].map((skill, idx) => (
-                      <li key={idx} className="flex items-center gap-3">
-                        <Icon name="CheckCircle2" className="text-primary" size={20} />
-                        <span>{skill}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+      <footer className="py-12 px-6 border-t border-border">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="Ruler" className="text-primary" size={24} />
+                <span className="font-heading text-xl font-bold">SizeLeaks</span>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+              <p className="text-sm text-muted-foreground">
+                Профессиональные измерения с 2024 года. Конфиденциальность гарантирована.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Информация</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="hover:text-foreground cursor-pointer transition-colors">О нас</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Методология</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">Конфиденциальность</li>
+                <li className="hover:text-foreground cursor-pointer transition-colors">FAQ</li>
+              </ul>
+            </div>
 
-      <section id="portfolio" className="min-h-screen flex items-center justify-center px-6 py-20">
-        <div className="max-w-6xl w-full">
-          <h2 className="text-4xl font-bold font-heading mb-12 text-center">Портфолио</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {portfolioProjects.map((project, idx) => (
-              <Card key={project.id} className="hover:shadow-lg transition-shadow animate-fade-in" style={{ animationDelay: `${idx * 100}ms` }}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-xl mb-2">{project.title}</CardTitle>
-                      <CardDescription>{project.description}</CardDescription>
-                    </div>
-                    <Icon name="Briefcase" className="text-primary" size={24} />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
-                    {project.category}
-                  </span>
-                </CardContent>
-              </Card>
-            ))}
+            <div>
+              <h4 className="font-semibold mb-4">Контакты</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <Icon name="Mail" size={16} />
+                  info@sizeleaks.com
+                </li>
+                <li className="flex items-center gap-2">
+                  <Icon name="MessageCircle" size={16} />
+                  Telegram: @sizeleaks
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </section>
 
-      <section id="services" className="min-h-screen flex items-center justify-center px-6 bg-muted/30">
-        <div className="max-w-6xl w-full">
-          <h2 className="text-4xl font-bold font-heading mb-12 text-center">Услуги</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((service, idx) => (
-              <Card key={idx} className="text-center hover:shadow-lg transition-shadow animate-fade-in" style={{ animationDelay: `${idx * 100}ms` }}>
-                <CardHeader>
-                  <div className="mx-auto mb-4 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                    <Icon name={service.icon} className="text-primary" size={32} />
-                  </div>
-                  <CardTitle className="text-lg mb-2">{service.title}</CardTitle>
-                  <CardDescription className="text-sm">{service.description}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
+          <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+            <p>© 2024 SizeLeaks. Вся информация получена законным путем. 18+</p>
           </div>
-        </div>
-      </section>
-
-      <section id="blog" className="min-h-screen flex items-center justify-center px-6 py-20">
-        <div className="max-w-6xl w-full">
-          <h2 className="text-4xl font-bold font-heading mb-12 text-center">Блог</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {blogPosts.map((post, idx) => (
-              <Card key={post.id} className="hover:shadow-lg transition-shadow cursor-pointer animate-fade-in" style={{ animationDelay: `${idx * 100}ms` }}>
-                <CardHeader>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                    <Icon name="Calendar" size={16} />
-                    <span>{post.date}</span>
-                  </div>
-                  <CardTitle className="text-xl mb-3">{post.title}</CardTitle>
-                  <CardDescription>{post.excerpt}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="link" className="p-0">
-                    Читать далее
-                    <Icon name="ArrowRight" className="ml-2" size={16} />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" className="min-h-screen flex items-center justify-center px-6 bg-muted/30">
-        <div className="max-w-2xl w-full">
-          <h2 className="text-4xl font-bold font-heading mb-12 text-center">Контакты</h2>
-          <Card className="animate-fade-in">
-            <CardContent className="p-8">
-              <form className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Имя</label>
-                  <Input placeholder="Ваше имя" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
-                  <Input type="email" placeholder="your@email.com" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Телефон</label>
-                  <Input type="tel" placeholder="+7 (___) ___-__-__" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Сообщение</label>
-                  <Textarea placeholder="Расскажите о вашем запросе..." rows={5} />
-                </div>
-                <Button type="submit" className="w-full" size="lg">
-                  Отправить сообщение
-                </Button>
-              </form>
-              <div className="mt-8 pt-8 border-t border-border">
-                <div className="grid md:grid-cols-3 gap-6 text-center">
-                  <div>
-                    <Icon name="Mail" className="mx-auto mb-2 text-primary" size={24} />
-                    <p className="text-sm text-muted-foreground">info@example.com</p>
-                  </div>
-                  <div>
-                    <Icon name="Phone" className="mx-auto mb-2 text-primary" size={24} />
-                    <p className="text-sm text-muted-foreground">+7 (999) 123-45-67</p>
-                  </div>
-                  <div>
-                    <Icon name="MapPin" className="mx-auto mb-2 text-primary" size={24} />
-                    <p className="text-sm text-muted-foreground">Москва, Россия</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      <footer className="bg-primary text-primary-foreground py-8">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-sm">&copy; 2024 Профессиональное портфолио. Все права защищены.</p>
         </div>
       </footer>
     </div>
